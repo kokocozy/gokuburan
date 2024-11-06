@@ -39,7 +39,8 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 8288
         script: |
-          echo "ini coba" >> cicdtesting.txt
+          cd /var/www/gokuburan/
+          git pull
     - name: Send Telegram Notification
       env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
