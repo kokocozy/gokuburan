@@ -74,7 +74,7 @@ class GraveResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->name('Nama')->searchable()->sortable(),
+                TextColumn::make('name')->label('Name')->searchable()->sortable(),
                 TextColumn::make('user.name')->label('Admin kuburan')->searchable()->sortable()
             ])
             ->filters([
