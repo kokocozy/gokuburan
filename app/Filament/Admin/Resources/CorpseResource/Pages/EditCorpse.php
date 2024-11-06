@@ -18,4 +18,13 @@ class EditCorpse extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['lat'] = $data['coordinates']['latitude'];
+        $data['lng'] = $data['coordinates']['longitude'];
+        $data['coordinates'] = "";
+
+        return $data;
+    }
 }

@@ -1,9 +1,6 @@
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     <div x-data="formInput">
         <div wire:ignore id="map"></div>
-        <p>{{ json_encode($this->data) }}</p>
-        <p>{{ json_encode($getCoordinates()) }}</p>
-        <p>{{ json_encode($getImageUrl()) }}</p>
     </div>
 
     @script
