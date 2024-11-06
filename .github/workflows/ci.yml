@@ -31,11 +31,8 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
-    # - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
-    #   env:
-    #     DB_CONNECTION: sqlite
-    #     DB_DATABASE: database/database.sqlite
-    #   run: php artisan test
+    - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
+      run: php artisan test
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
@@ -48,7 +45,7 @@ jobs:
  
     - name: Run Pint
       run: pint
-      
+
     - name: Deploy Using ssh
       uses: appleboy/ssh-action@master
       with:
