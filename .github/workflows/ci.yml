@@ -47,7 +47,7 @@ jobs:
     - name: Install Pint
       run: composer global require laravel/pint
  
-    - name: Run Pint
+    - name: Testing PINT
       run: pint
 
     - name: Deploy Using ssh

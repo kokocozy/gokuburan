@@ -1,0 +1,20 @@
+user=farhan
+pw=Farhan31
+db=mydb
+server.muhfarkhans.com
+sudo chown -R www-data.www-data /var/www/gokuburan/storage
+sudo chown -R www-data.www-data /var/www/gokuburan/bootstrap/cache
+sudo chown -R www-data:www-data /var/www/gokuburan
+sudo chmod -R 755 /var/www/gokuburan/storage
+sudo chmod -R 755 /var/www/gokuburan/public/storage
+sudo chmod -R 755 /var/www/gokuburan/bootstrap/cache
+7700696648:AAE7QpgTtJHlS2IBQMxj2bcm5WAwCvHHCGs
+https://api.telegram.org/bot7700696648:AAE7QpgTtJHlS2IBQMxj2bcm5WAwCvHHCGs/sendMessage?chat_id=-4531292856&text=coba lagi
+curl -s -X POST https://api.telegram.org/bot7700696648:AAE7QpgTtJHlS2IBQMxj2bcm5WAwCvHHCGs/sendMessage \
+  -d chat_id=-4531292856 \
+  -d text="Halo, ini adalah pesan dari bot Telegram!" \
+  -d parse_mode="Markdown"
+curl -s -X POST https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage \
+  -d chat_id=$TELEGRAM_CHAT_ID \
+  -d text="Halo, ini adalah pesan dari bot Telegram!" \
+  -d parse_mode="Markdown"
