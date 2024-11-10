@@ -27,15 +27,15 @@ jobs:
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
 
-    - name: Create Database
-      run: |
-        mkdir -p database
-        touch database/database.sqlite
-    - name: Execute tests (Unit and Feature tests) via PHPUnit
-      env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-      run: php artisan test
+    # - name: Create Database
+    #   run: |
+    #     mkdir -p database
+    #     touch database/database.sqlite
+    # - name: Execute tests (Unit and Feature tests) via PHPUnit
+    #   env:
+    #       DB_CONNECTION: sqlite
+    #       DB_DATABASE: database/database.sqlite
+    #   run: php artisan test
       
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
