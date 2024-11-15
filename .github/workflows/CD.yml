@@ -1,0 +1,38 @@
+name: DEPLOY TO SERVER
+on:
+  release:
+    types: 
+      - published
+
+jobs:
+  Deploy-Laravel:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy Using ssh
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          cd /var/www/gokuburan/
+          git pull
+
+    - name: Send Telegram Notification
+      env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF: ${{ github.ref }}
+          GITHUB_SHA: ${{ github.sha }}
+      run: |
+          MESSAGE="🔔 Repository *$GITHUB_REPOSITORY* baru saja dideploy oleh $GITHUB_ACTOR. 
+          Branch: $GITHUB_REF
+          Commit: [$GITHUB_SHA:0:7](https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA)"
+          
+          curl -s -X POST https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage \
+            -d chat_id=$TELEGRAM_CHAT_ID \
+            -d text="$MESSAGE" \
+            -d parse_mode="Markdown"

@@ -1,31 +1,35 @@
-name: CI
+name: TESTING CODE
 on:
-  pull_request:
+  push:
     branches:
-      - master
- 
+      - master 
 
 jobs:
-  tests:
+  testing-code:
     runs-on: ubuntu-latest
-
     services:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
           MYSQL_DATABASE: laravel
+          MYSQL_ROOT_PASSWORD: root
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Code
+      uses: actions/checkout@v3
       with:
         fetch-depth: 1
 
-    - name: Cache composer dependencies
-      uses: actions/cache@v2
+    - name: Cache Composer Dependencies
+      uses: actions/cache@v3
       with:
         path: vendor
         key: composer-${{ hashFiles('**/composer.lock') }}
@@ -33,18 +37,49 @@ jobs:
           composer-
 
     - name: Install PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@v3
       with:
         php-version: 8.2
+        extensions: mbstring, mysql
 
-    - name: Install composer dependencies
+    - name: Install Composer Dependencies
       run: |
-        composer install --no-scripts
+        composer install --no-scripts --prefer-dist
 
     - name: Prepare Laravel Application
       run: |
         cp .env.example .env
         php artisan key:generate
-
-    - name: Run Test suite
+        
+    - name: Run PHP CodeSniffer (Linter)
+      run: |
+          composer require --dev squizlabs/php_codesniffer
+          vendor/bin/phpcs --standard=PSR12 app/
+    - name: Run Test Suite
+      env:
+        DB_CONNECTION: mysql
+        DB_HOST: 127.0.0.1
+        DB_PORT: 3306
+        DB_DATABASE: laravel
+        DB_USERNAME: root
+        DB_PASSWORD: root
       run: php artisan test
+
+    - name: Send Telegram Notification
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        GITHUB_ACTOR: ${{ github.actor }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_REF: ${{ github.ref }}
+        GITHUB_SHA: ${{ github.sha }}
+      run: |
+        MESSAGE="🔔 *Repository:* [$GITHUB_REPOSITORY](https://github.com/$GITHUB_REPOSITORY)
+        *Updated by:* $GITHUB_ACTOR
+        *Branch:* $GITHUB_REF
+        *Commit:* [${GITHUB_SHA:0:7}](https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA)"
+        
+        curl -s -X POST https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage \
+          -d chat_id=$TELEGRAM_CHAT_ID \
+          -d text="$MESSAGE" \
+          -d parse_mode="Markdown"
