@@ -2,20 +2,19 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\Unit\TestCase;
+use App\Filament\Admin\Resources\GraveResource\Pages\ListGraves;
+use App\Models\Corpse;
+use App\Models\Grave;
+use App\Models\User;
+use function Pest\Livewire\livewire;
 
+beforeEach(function () {
+    $this->actingAs(User::where('role', 'admin')->first());
+});
 
-class GraveTest extends TestCase
-{
-    /**
-     * A basic feature test example.
-     */
-    public function test_example(): void
-    {
-        $response = $this->get('/');
+it('can list graves', function () {
+    $graves = Grave::limit(10)->get();
+    livewire(ListGraves::class)
+        ->assertCanSeeTableRecords($graves);
+});
 
-        $response->assertStatus(200);
-    }
-}
