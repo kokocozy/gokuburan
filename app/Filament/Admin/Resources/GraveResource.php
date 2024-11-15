@@ -45,7 +45,10 @@ class GraveResource extends Resource
                     ->label('Admin')
                     ->searchable()
                     ->getSearchResultsUsing(
-                        fn(string $search): array => User::where('role', Role::Client)->where('name', 'like', "%{$search}%")
+                        fn(string $search): array => User::where(
+                            'role',
+                            Role::Client
+                        )->where('name', 'like', "%{$search}%")
                             ->limit(5)
                             ->pluck('name', 'id')
                             ->toArray()
