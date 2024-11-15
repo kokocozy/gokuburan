@@ -16,6 +16,6 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->actingAs(User::where('role', 'admin')->first());
+        // $this->actingAs(User::where('role', 'admin')->first());
     }
 }
