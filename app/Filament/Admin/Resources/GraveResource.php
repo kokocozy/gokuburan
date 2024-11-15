@@ -143,8 +143,8 @@ class GraveResource extends Resource
     {
         return [
             'index' => Pages\ListGraves::route('/'),
-            'view' => Pages\ViewGrave::route('/{record}'),
             'create' => Pages\CreateGrave::route('/create'),
+            'view' => Pages\ViewGrave::route('/{record}'),
             'edit' => Pages\EditGrave::route('/{record}/edit'),
         ];
     }
