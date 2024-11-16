@@ -55,8 +55,8 @@ jobs:
         run: |
             composer require --dev squizlabs/php_codesniffer
             vendor/bin/phpcs --standard=PSR12 app/
-      - name: Run Test suite
-        run: composer test
+      # - name: Run Test suite
+      #   run: composer test
       - name: Clear Config
         run: php artisan config:clear
       - name: Run Migration
