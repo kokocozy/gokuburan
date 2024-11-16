@@ -5,17 +5,11 @@ jobs:
   laravel:
     name: Laravel PHP 8.2
     runs-on: ubuntu-latest
-    env:
-      DB_DATABASE: mydb_test
-      DB_USERNAME: test
-      DB_PASSWORD: password
-      BROADCAST_DRIVER: log
     services:
       mysql:
         image: mysql:8
         env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: false
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_DATABASE: mydb_test
         ports:
           - 3306/tcp
