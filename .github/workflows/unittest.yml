@@ -52,8 +52,7 @@ jobs:
         run: |
             composer require --dev squizlabs/php_codesniffer
             vendor/bin/phpcs --standard=PSR12 app/
-      - name: Run Test suite
-        run: php artisan test
+
       - name: Clear Config
         run: php artisan config:clear
       - name: Run Migration
@@ -64,6 +63,8 @@ jobs:
         run: vendor/bin/phpunit --coverage-text
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
+      - name: Run Test suite
+        run: php artisan test
       - name: Send Telegram Notification
         env:
             TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
