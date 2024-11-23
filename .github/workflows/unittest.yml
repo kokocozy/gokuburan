@@ -3,7 +3,7 @@ name: Testing Laravel with MySQL
 on: [push, pull_request]
 jobs:
   laravel:
-    name: Laravel PHP 8.2
+    name: Laravel 8.2
     runs-on: ubuntu-latest
 
     services:
@@ -60,11 +60,11 @@ jobs:
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
       - name: Test with phpunit
-        run: vendor/bin/phpunit --coverage-text
+        run: vendor/bin/phpunit/pest --coverage-text
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
       - name: Run Test suite
-        run: vendor/bin/pest
+        run: php artisan test
       - name: Send Telegram Notification
         env:
             TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
