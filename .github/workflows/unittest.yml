@@ -64,7 +64,7 @@ jobs:
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
       - name: Run Test suite
-        run: php artisan test
+        run: vendor/bin/pest
       - name: Send Telegram Notification
         env:
             TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
