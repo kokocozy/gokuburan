@@ -3,7 +3,7 @@ name: Testing Laravel with MySQL
 on: [push, pull_request]
 jobs:
   laravel:
-    name: Laravel 8.2
+    name: Laravel PHP 8.2
     runs-on: ubuntu-latest
 
     services:
