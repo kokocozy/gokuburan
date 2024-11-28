@@ -62,7 +62,7 @@ jobs:
       - name: Test with phpunit
         run: | 
             composer require --dev phpunit/phpunit
-            vendor/bin/phpunit/pest --coverage-text
+            vendor/bin/phpunit --coverage-text
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
       - name: Run Test suite
