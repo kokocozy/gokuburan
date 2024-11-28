@@ -48,8 +48,6 @@ jobs:
         run: |
           php -r "file_exists('.env') || copy('.env.example', '.env');"
           php artisan key:generate
-          php artisan config:cache
-          php artisan vendor:publish
       - name: Run PHP CodeSniffer (Linter)
         run: |
             composer require --dev squizlabs/php_codesniffer
