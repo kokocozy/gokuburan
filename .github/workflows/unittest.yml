@@ -1,5 +1,5 @@
 # GitHub Action for Laravel with MySQL
-name: Testing Laravel with MySQL
+name: Testing
 on: [push, pull_request]
 jobs:
   laravel:
@@ -48,6 +48,8 @@ jobs:
         run: |
           php -r "file_exists('.env') || copy('.env.example', '.env');"
           php artisan key:generate
+          php artisan config:cache
+          php artisan vendor:publish
       - name: Run PHP CodeSniffer (Linter)
         run: |
             composer require --dev squizlabs/php_codesniffer
@@ -76,7 +78,7 @@ jobs:
             GITHUB_REF: ${{ github.ref }}
             GITHUB_SHA: ${{ github.sha }}
         run: |
-              MESSAGE="🔔 Repository *$GITHUB_REPOSITORY* baru saja dideploy oleh $GITHUB_ACTOR. 
+              MESSAGE="🔔 Repository *$GITHUB_REPOSITORY* baru saja di perbarui $GITHUB_ACTOR. 
               Branch: $GITHUB_REF
               Commit: [$GITHUB_SHA:0:7](https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA)"
               
