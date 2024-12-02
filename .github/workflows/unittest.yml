@@ -6,10 +6,10 @@ jobs:
     name: Laravel 8.2
     runs-on: ubuntu-latest
     env:
-      DB_DATABASE: test
-      DB_USERNAME: test
-      DB_PASSWORD: password
-      BROADCAST_DRIVER: log
+      DB_DATABASE: ${{ secrets.DB_DATABASE }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      BROADCAST_DRIVER: ${{ secrets.BROADCAST_DRIVER }}
     services:
       mysql:
         image: mysql:8
