@@ -62,7 +62,6 @@ jobs:
       - name: Test with phpunit
         run: | 
             composer require --dev phpunit/phpunit
-            echo $(sudo pwd)
             ./vendor/bin/pest
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
