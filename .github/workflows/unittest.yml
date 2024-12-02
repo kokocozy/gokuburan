@@ -5,10 +5,6 @@ jobs:
   laravel:
     name: Laravel 8.2
     runs-on: ubuntu-latest
-    env:
-      DB_DATABASE: "${{ secrets.DB_DATABASE }}"
-      DB_USERNAME: "${{ secrets.DB_USERNAME }}"
-      DB_PASSWORD: "${{ secrets.DB_PASSWORD }}"
     services:
       mysql:
         image: mysql:8
@@ -76,6 +72,9 @@ jobs:
             echo $(sudo pwd)
             ./vendor/bin/pest
         env:
+          DB_DATABASE: "${{ secrets.DB_DATABASE }}"
+          DB_USERNAME: "${{ secrets.DB_USERNAME }}"
+          DB_PASSWORD: "${{ secrets.DB_PASSWORD }}"
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
       - name: Run Test suite
         run: php artisan test
