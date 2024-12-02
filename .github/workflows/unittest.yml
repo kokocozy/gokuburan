@@ -55,6 +55,10 @@ jobs:
 
       - name: Clear Config
         run: php artisan config:clear
+      - name: NPM install
+        run: |
+            npm install
+            npm run dev
       - name: Run Migration
         run: php artisan migrate -v
         env:
