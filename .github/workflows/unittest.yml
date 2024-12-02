@@ -6,9 +6,6 @@ jobs:
     name: Laravel 8.2
     runs-on: ubuntu-latest
     env:
-      DB_CONNECTION: mysql
-      DB_HOST: 127.0.0.1
-      DB_PORT: 3306
       DB_DATABASE: ${{ secrets.DB_DATABASE }}
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -67,7 +64,7 @@ jobs:
             npm install
             npm run build
       - name: Run Migration
-        run: php artisan migrate -v
+        run: php artisan migrate --force -v
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
       - name: Run Seeder
