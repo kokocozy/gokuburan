@@ -5,7 +5,11 @@ jobs:
   laravel:
     name: Laravel 8.2
     runs-on: ubuntu-latest
-
+    env:
+      DB_DATABASE: test
+      DB_USERNAME: test
+      DB_PASSWORD: password
+      BROADCAST_DRIVER: log
     services:
       mysql:
         image: mysql:8
