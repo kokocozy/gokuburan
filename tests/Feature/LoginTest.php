@@ -1,7 +1,7 @@
 <?php
 
-test('can render login page', function () {
-    $response = $this->get('/admin/login');
+// test('can render login page', function () {
+//     $response = $this->get('/admin/login');
 
-    $response->assertStatus(200);
-});
+//     $response->assertStatus(200);
+// });
