@@ -5,22 +5,21 @@ jobs:
   laravel:
     name: Laravel 8.2
     runs-on: ubuntu-latest
-
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: false
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: laravel
-        ports:
-          - 3306/tcp
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    # env:
+    #   DB_CONNECTION: mysql
+    #   DB_HOST: ${{ secrets.DB_HOST }}
+    #   DB_PORT: ${{ secrets.DB_PORT }}
+    #   DB_DATABASE: ${{ secrets.DB_DATABASE }}
+    #   DB_USERNAME: ${{ secrets.DB_USERNAME }}
+    #   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    #   MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
         php-versions: [8.3]
     steps:
+      - name: Debug environment variables
+        run: echo "TEST=${{ secrets.TEST }}"
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup PHP, with composer and extensions
@@ -31,6 +30,23 @@ jobs:
           coverage: xdebug #optional
       - name: Start mysql service
         run: sudo /etc/init.d/mysql start
+      # - name: Set up MySQL database and user
+      #   run: |
+      #     sudo -E mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS ${DB_DATABASE};"
+      #     sudo -E mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "CREATE USER IF NOT EXISTS '${DB_USERNAME}'@'%' IDENTIFIED BY '${DB_PASSWORD}';"
+      #     sudo -E mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT ALL PRIVILEGES ON ${DB_DATABASE}.* TO '${DB_USERNAME}'@'%';"
+      #     sudo -E mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "FLUSH PRIVILEGES;"
+      #   env:
+      #     DB_CONNECTION: mysql
+      #     DB_HOST: 'localhost'
+      #     DB_PORT: ${{ secrets.DB_PORT }}
+      #     DB_DATABASE: ${{ secrets.DB_DATABASE }}
+      #     DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      #     MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+      # - name: Test Database Connection
+      #   run: |
+      #     sudo mysql -h 127.0.0.1 -P ${DB_PORT} -u ${DB_USERNAME} -p${DB_PASSWORD} -e "SHOW DATABASES;"
       - name: Get composer cache directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -52,7 +68,6 @@ jobs:
         run: |
             composer require --dev squizlabs/php_codesniffer
             vendor/bin/phpcs --standard=PSR12 app/
-
       - name: Clear Config
         run: php artisan config:clear
       - name: NPM install
@@ -60,15 +75,13 @@ jobs:
             npm install
             npm run build
       - name: Run Migration
-        run: php artisan migrate -v
-        env:
-          DB_PORT: ${{ job.services.mysql.ports['3306'] }}
+        run: php artisan migrate --force -v
+      - name: Run Seeder
+        run: php artisan db:seed
       - name: Test with phpunit
         run: | 
             composer require --dev phpunit/phpunit
             ./vendor/bin/pest
-        env:
-          DB_PORT: ${{ job.services.mysql.ports['3306'] }}
       - name: Run Test suite
         run: php artisan test
       - name: Send Telegram Notification
