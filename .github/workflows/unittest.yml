@@ -38,6 +38,9 @@ jobs:
           coverage: xdebug #optional
       - name: Start mysql service
         run: sudo /etc/init.d/mysql start
+      - name: Test Database Connection
+        run: |
+          sudo mysql -h 127.0.0.1 -P ${DB_PORT} -u ${DB_USERNAME} -p${DB_PASSWORD} -e "SHOW DATABASES;"
       - name: Get composer cache directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -65,9 +68,6 @@ jobs:
         run: |
             npm install
             npm run build
-      - name: Test Database Connection
-        run: |
-          mysql -h 127.0.0.1 -P ${DB_PORT} -u ${DB_USERNAME} -p${DB_PASSWORD} -e "SHOW DATABASES;"
       - name: Run Migration
         run: php artisan migrate --force -v
       - name: Run Seeder
