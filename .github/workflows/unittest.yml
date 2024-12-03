@@ -36,7 +36,7 @@ jobs:
           sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "CREATE USER IF NOT EXISTS '${{ secrets.DB_USERNAME }}'@'%' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}';"
           sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "GRANT ALL PRIVILEGES ON ${{ secrets.DB_DATABASE }}.* TO '${{ secrets.DB_USERNAME }}'@'%';"
           sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "FLUSH PRIVILEGES;"
-        env:
+        # env:
           # DB_CONNECTION: mysql
           # DB_HOST: ${{ secrets.DB_HOST }}
           # DB_PORT: ${{ secrets.DB_PORT }}
