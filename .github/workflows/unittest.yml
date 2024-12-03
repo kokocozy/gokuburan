@@ -19,8 +19,7 @@ jobs:
         php-versions: [8.2]
     steps:
       - name: Debug environment variables
-      run: |
-        echo "TEST=${{ secrets.TEST }}"
+        run: echo "TEST=${{ secrets.TEST }}"
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup PHP, with composer and extensions
