@@ -6,7 +6,6 @@ jobs:
     name: Laravel 8.2
     runs-on: ubuntu-latest
     env:
-      env:
       DB_CONNECTION: mysql
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_PORT: ${{ secrets.DB_PORT }}
@@ -39,12 +38,6 @@ jobs:
           coverage: xdebug #optional
       - name: Start mysql service
         run: sudo /etc/init.d/mysql start
-      - name: Set up MySQL database and user
-        run: |
-          sudo mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS ${DB_DATABASE};"
-          sudo mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "CREATE USER IF NOT EXISTS '${DB_USERNAME}'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';"
-          sudo mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT ALL PRIVILEGES ON ${DB_DATABASE}.* TO '${DB_USERNAME}'@'localhost';"
-          sudo mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "FLUSH PRIVILEGES;"
       - name: Get composer cache directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -74,7 +67,7 @@ jobs:
             npm run build
       - name: Test Database Connection
         run: |
-          mysql -h 127.0.0.1 -P 3306 -u root -ppassword -e "SHOW DATABASES;"
+          mysql -h 127.0.0.1 -P ${DB_PORT} -u ${DB_USERNAME} -p${DB_PASSWORD} -e "SHOW DATABASES;"
       - name: Run Migration
         run: php artisan migrate --force -v
       - name: Run Seeder
