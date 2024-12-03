@@ -5,16 +5,23 @@ jobs:
   laravel:
     name: Laravel 8.2
     runs-on: ubuntu-latest
+    env:
+      DB_DATABASE: ${{ secrets.DB_DATABASE }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_PORT: ${{ secrets.DB_PORT }}
     services:
       mysql:
         image: mysql:8
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: false
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: laravel
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.DB_DATABASE }}
+          MYSQL_USER: ${{ secrets.DB_USERNAME }}
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
         ports:
-          - 3306/tcp
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - ${{ secrets.DB_PORT }}:3306
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1 -u${{ secrets.DB_USERNAME }} -p${{ secrets.DB_PASSWORD }}" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       fail-fast: false
       matrix:
@@ -51,37 +58,24 @@ jobs:
         run: |
             composer require --dev squizlabs/php_codesniffer
             vendor/bin/phpcs --standard=PSR12 app/
-
       - name: Clear Config
         run: php artisan config:clear
       - name: NPM install
         run: |
             npm install
             npm run build
+      - name: Test Database Connection
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u root -ppassword -e "SHOW DATABASES;"
       - name: Run Migration
         run: php artisan migrate --force -v
-        env:
-          DB_DATABASE: ${{ secrets.DB_DATABASE }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_PORT: ${{ secrets.DB_PORT }}
       - name: Run Seeder
         run: php artisan db:seed
-        env:
-          DB_DATABASE: ${{ secrets.DB_DATABASE }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_PORT: ${{ secrets.DB_PORT }}
       - name: Test with phpunit
         run: | 
             composer require --dev phpunit/phpunit
             echo $(sudo pwd)
             ./vendor/bin/pest
-        env:
-          DB_DATABASE: ${{ secrets.DB_DATABASE }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_PORT: ${{ secrets.DB_PORT }}
       - name: Run Test suite
         run: php artisan test
       - name: Send Telegram Notification
