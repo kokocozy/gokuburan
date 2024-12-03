@@ -5,14 +5,14 @@ jobs:
   laravel:
     name: Laravel 8.2
     runs-on: ubuntu-latest
-    env:
-      DB_CONNECTION: mysql
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_DATABASE: ${{ secrets.DB_DATABASE }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+    # env:
+    #   DB_CONNECTION: mysql
+    #   DB_HOST: ${{ secrets.DB_HOST }}
+    #   DB_PORT: ${{ secrets.DB_PORT }}
+    #   DB_DATABASE: ${{ secrets.DB_DATABASE }}
+    #   DB_USERNAME: ${{ secrets.DB_USERNAME }}
+    #   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    #   MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -30,18 +30,18 @@ jobs:
         run: sudo /etc/init.d/mysql start
       - name: Set up MySQL database and user
         run: |
-          sudo mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS ${DB_DATABASE};"
-          sudo mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "CREATE USER IF NOT EXISTS '${DB_USERNAME}'@'%' IDENTIFIED BY '${DB_PASSWORD}';"
-          sudo mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT ALL PRIVILEGES ON ${DB_DATABASE}.* TO '${DB_USERNAME}'@'%';"
-          sudo mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "FLUSH PRIVILEGES;"
+          sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }}-e "CREATE DATABASE IF NOT EXISTS ${{ secrets.DB_DATABASE }};"
+          sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "CREATE USER IF NOT EXISTS '${{ secrets.DB_USERNAME }}'@'%' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}';"
+          sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "GRANT ALL PRIVILEGES ON ${{ secrets.DB_DATABASE }}.* TO '${{ secrets.DB_USERNAME }}'@'%';"
+          sudo mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} -e "FLUSH PRIVILEGES;"
         env:
-          DB_CONNECTION: mysql
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_DATABASE: ${{ secrets.DB_DATABASE }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          # DB_CONNECTION: mysql
+          # DB_HOST: ${{ secrets.DB_HOST }}
+          # DB_PORT: ${{ secrets.DB_PORT }}
+          # DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          # DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          # DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          # MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
       - name: Test Database Connection
         run: |
           sudo mysql -h 127.0.0.1 -P ${DB_PORT} -u ${DB_USERNAME} -p${DB_PASSWORD} -e "SHOW DATABASES;"
